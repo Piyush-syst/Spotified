@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "464743469828",
+    "firebase_url": "https://spotified-b5f71.firebaseio.com",
+    "project_id": "spotified-b5f71",
+    "storage_bucket": "spotified-b5f71.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:464743469828:android:df0b0e559b1e29e5f47651",
+        "android_client_info": {
+          "package_name": "com.example.spotified"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "464743469828-1cfioqhfee6dueo3c2l525lelq6438o2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.spotified",
+            "certificate_hash": "434e0562e54eeadf50c7997099dc19ea56ae2559"
+          }
+        },
+        {
+          "client_id": "464743469828-v44o3s2uoe54hb363c1mgktm7bbhfv1u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAWYe1SyHU9JxvF27ScJkrg9ZxnCeDSl3w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "464743469828-v44o3s2uoe54hb363c1mgktm7bbhfv1u.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
