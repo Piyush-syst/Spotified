@@ -3,20 +3,20 @@ package com.example.spotified;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Owner {
+public class Artist {
 
-    @SerializedName("display_name")
-    @Expose
-    private String displayName;
     @SerializedName("external_urls")
     @Expose
-    private ExternalUrls externalUrls;
+    private TrackExternalUrls externalUrls;
     @SerializedName("href")
     @Expose
     private String href;
     @SerializedName("id")
     @Expose
     private String id;
+    @SerializedName("name")
+    @Expose
+    private String name;
     @SerializedName("type")
     @Expose
     private String type;
@@ -24,19 +24,11 @@ public class Owner {
     @Expose
     private String uri;
 
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
-    }
-
-    public ExternalUrls getExternalUrls() {
+    public TrackExternalUrls getExternalUrls() {
         return externalUrls;
     }
 
-    public void setExternalUrls(ExternalUrls externalUrls) {
+    public void setExternalUrls(TrackExternalUrls externalUrls) {
         this.externalUrls = externalUrls;
     }
 
@@ -54,6 +46,14 @@ public class Owner {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getType() {

@@ -1,4 +1,3 @@
-
 package com.example.spotified;
 
 import com.google.gson.annotations.Expose;

@@ -1,7 +1,10 @@
 package com.example.spotified;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
@@ -10,7 +13,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.google.android.gms.common.api.Response;
+
 import com.spotify.android.appremote.api.ConnectionParams;
 import com.spotify.android.appremote.api.Connector;
 import com.spotify.android.appremote.api.SpotifyAppRemote;
@@ -20,45 +23,63 @@ import com.spotify.protocol.types.Track;
 import com.spotify.sdk.android.authentication.AuthenticationClient;
 import com.spotify.sdk.android.authentication.AuthenticationRequest;
 import com.spotify.sdk.android.authentication.AuthenticationResponse;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class SpotifyActivity extends AppCompatActivity {
-    String MyPREFERENCES="MyPref";
+    String MyPREFERENCES = "MyPref";
     private static final String CLIENT_ID = "0bdd186913574cd3ae5a119af38f54a1";
     private static final String REDIRECT_URI = "http://com.example.spotified/callback";
     private static final int REQUEST_CODE = 1337;
     private SpotifyAppRemote mSpotifyAppRemote;
     ConnectionParams connectionParams;
+    APIInterface apiInterface;
+    private RecyclerView recyclerView;
+    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.LayoutManager layoutManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_spotify);
-       connectionParams =
+        recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+
+        // use this setting to improve performance if you know that changes
+        // in content do not change the layout size of the RecyclerView
+        recyclerView.setHasFixedSize(true);
+
+        // use a linear layout manager
+        layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+
+        // specify an adapter (see also next example)
+
+
+
+        connectionParams =
                 new ConnectionParams.Builder(CLIENT_ID)
                         .setRedirectUri(REDIRECT_URI)
                         .showAuthView(true)
                         .build();
         AuthenticationRequest.Builder builder =
                 new AuthenticationRequest.Builder(CLIENT_ID, AuthenticationResponse.Type.TOKEN, REDIRECT_URI);
-
-        builder.setScopes(new String[]{"streaming","playlist-read-private","user-read-email","user-read-playback-position"});
+        builder.setScopes(new String[]{"streaming", "playlist-read-private", "user-read-email", "user-read-playback-position"});
         AuthenticationRequest request = builder.build();
 
         AuthenticationClient.openLoginActivity(this, REQUEST_CODE, request);
-    }
-
-    @Override
+       }
+            @Override
     protected void onStart() {
         super.onStart();
         SharedPreferences sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
-       String token= sharedpreferences.getString("Spotifytoken","EmptyToken");
-if(token.equals("EmptyToken"))
-{
-    Toast.makeText(getApplicationContext(),"NO token",Toast.LENGTH_LONG).show();
-}
-else
-{
-    getList(token);
-}
+        String token = sharedpreferences.getString("Spotifytoken", "EmptyToken");
+
+
+        if (token.equals("EmptyToken")) {
+            Toast.makeText(getApplicationContext(), "NO token", Toast.LENGTH_LONG).show();
+        } else {
+
+        }
         SpotifyAppRemote.connect(this, connectionParams,
                 new Connector.ConnectionListener() {
 
@@ -66,59 +87,79 @@ else
                     public void onConnected(SpotifyAppRemote spotifyAppRemote) {
                         mSpotifyAppRemote = spotifyAppRemote;
                         Log.d("MainActivity3", "Connected! Yay!");
-spotifyAppRemote.getContentApi();
+                        spotifyAppRemote.getContentApi();
                         // Now you can start interacting with App Remote
                         connected();
                     }
-private void connected()
-{
-    mSpotifyAppRemote.getPlayerApi().play("spotify:playlist:37i9dQZF1DX2sUQwD7tbmL");
-    mSpotifyAppRemote.getPlayerApi()
-            .subscribeToPlayerState()
-            .setEventCallback(new Subscription.EventCallback<PlayerState>() {
-                @Override
-                public void onEvent(PlayerState playerState) {
-                    final Track track = playerState.track;
-                    if (track != null) {
-                        Log.d("MainActivity1", track.name + " by " + track.artist.name);
-                    }
-                }
-            });
 
-}
                     @Override
                     public void onFailure(Throwable throwable) {
-                        Log.e("MainActivity2", throwable.getMessage(), throwable);
 
-                        // Something went wrong when attempting to connect! Handle errors here
+                    }
+
+                    private void connected() {
+                        mSpotifyAppRemote.getPlayerApi().play("spotify:playlist:37i9dQZF1DX2sUQwD7tbmL");
+                        mSpotifyAppRemote.getPlayerApi()
+                                .subscribeToPlayerState()
+                                .setEventCallback(new Subscription.EventCallback<PlayerState>() {
+                                    @Override
+                                    public void onEvent(PlayerState playerState) {
+                                        final Track track = playerState.track;
+                                        if (track != null) {
+                                            Log.d("MainActivity1", track.name + " by " + track.artist.name);
+                                        }
+                                    }
+                                });
+                    }
+
+                    private void getList(String token) {
+
                     }
                 });
     }
 
-    private void getList(String token) {
 
-    }
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        SpotifyAppRemote.disconnect(mSpotifyAppRemote);
-    }
-    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        super.onActivityResult(requestCode, resultCode, intent);
+            super.onActivityResult(requestCode, resultCode, data);
 
-        // Check if result comes from the correct activity
+
+
         if (requestCode == REQUEST_CODE) {
-            AuthenticationResponse response = AuthenticationClient.getResponse(resultCode, intent);
+            AuthenticationResponse response = AuthenticationClient.getResponse(resultCode, data);
 
             switch (response.getType()) {
                 // Response was successful and contains auth token
                 case TOKEN:
-                    Log.d("Token", ""+response.getAccessToken());
+                    Log.d("Token", "" + response.getAccessToken());
                     SharedPreferences sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedpreferences.edit();
-                    editor.putString("Spotifytoken",response.getAccessToken());
+                    editor.putString("Spotifytoken", response.getAccessToken());
                     editor.commit();
+                    apiInterface = APIClient.getClient().create(APIInterface.class);
+                    Call<SpotifyResult> call = apiInterface.doGetListResources("Bearer "+response.getAccessToken());
+                    call.enqueue(new Callback<SpotifyResult>() {
+                        @Override
+                        public void onResponse(Call<SpotifyResult> call, Response<SpotifyResult> response) {
+
+
+                            Log.d("TAG", response.code() + "");
+
+                            String displayResponse = "";
+
+                            SpotifyResult resource = response.body();
+//                responseText.setText(displayResponse);
+
+                            mAdapter = new MyAdapter(resource,SpotifyActivity.this);
+                            recyclerView.setAdapter(mAdapter);
+                        }
+
+                        @Override
+                        public void onFailure(Call<SpotifyResult> call, Throwable t) {
+                            call.cancel();;
+
+                        }
+                    });
                     // Handle successful response
                     break;
 
@@ -129,7 +170,8 @@ private void connected()
 
                 // Most likely auth flow was cancelled
                 default:
-                    // Handle other cases
+                    break;
+                // Handle other cases
             }
         }
     }
