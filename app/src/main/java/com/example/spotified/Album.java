@@ -1,10 +1,14 @@
 package com.example.spotified;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.util.ArrayList;
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Album {
+public class Album implements Parcelable {
 
     @SerializedName("album_type")
     @Expose
@@ -117,4 +121,52 @@ public class Album {
         this.uri = uri;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.albumType);
+        dest.writeList(this.artists);
+        dest.writeStringList(this.availableMarkets);
+        dest.writeParcelable(this.externalUrls, flags);
+        dest.writeString(this.href);
+        dest.writeString(this.id);
+        dest.writeList(this.images);
+        dest.writeString(this.name);
+        dest.writeString(this.type);
+        dest.writeString(this.uri);
+    }
+
+    public Album() {
+    }
+
+    protected Album(Parcel in) {
+        this.albumType = in.readString();
+        this.artists = new ArrayList<Artist>();
+        in.readList(this.artists, Artist.class.getClassLoader());
+        this.availableMarkets = in.createStringArrayList();
+        this.externalUrls = in.readParcelable(TrackExternalUrls.class.getClassLoader());
+        this.href = in.readString();
+        this.id = in.readString();
+        this.images = new ArrayList<TrackImage>();
+        in.readList(this.images, TrackImage.class.getClassLoader());
+        this.name = in.readString();
+        this.type = in.readString();
+        this.uri = in.readString();
+    }
+
+    public static final Parcelable.Creator<Album> CREATOR = new Parcelable.Creator<Album>() {
+        @Override
+        public Album createFromParcel(Parcel source) {
+            return new Album(source);
+        }
+
+        @Override
+        public Album[] newArray(int size) {
+            return new Album[size];
+        }
+    };
 }

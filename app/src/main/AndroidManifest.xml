@@ -9,11 +9,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".songsActivity"></activity>
+        <activity android:name=".Player"></activity>
+        <activity android:name=".songsActivity" />
         <activity
             android:name=".SpotifyActivity"
             android:theme="@style/Theme.AppCompat" />
-        <activity android:name=".LoginActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

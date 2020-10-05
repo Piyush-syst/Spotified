@@ -2,6 +2,7 @@ package com.example.spotified;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ActionBar;
 import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
@@ -24,14 +25,14 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().hide();
 //        ActionBar actionBar = getActionBar();
 //        actionBar.hide();
-        Button btn=findViewById(R.id.button);
-        btn.setOnClickListener(new View.OnClickListener() {
+        new Handler().postDelayed(new Runnable() {
             @Override
-            public void onClick(View v) {
-                Intent i= new Intent(MainActivity.this,LoginActivity.class);
+            public void run() {
+                Intent i= new Intent(MainActivity.this, SpotifyActivity.class);
                 startActivity(i);
+                finish();
             }
-        });
+        },5000);
 
 
 }

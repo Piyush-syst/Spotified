@@ -29,8 +29,8 @@ import retrofit2.Response;
 
 public class SpotifyActivity extends AppCompatActivity {
     String MyPREFERENCES = "MyPref";
-    private static final String CLIENT_ID = "0bdd186913574cd3ae5a119af38f54a1";
-    private static final String REDIRECT_URI = "http://com.example.spotified/callback";
+    private static final String CLIENT_ID = "6642af4c9904486a80f9d62cc417168e";
+    private static final String REDIRECT_URI = "https://com.example.spotified/callback";
     private static final int REQUEST_CODE = 1337;
     private SpotifyAppRemote mSpotifyAppRemote;
     ConnectionParams connectionParams;
@@ -56,17 +56,13 @@ public class SpotifyActivity extends AppCompatActivity {
 
 
 
-        connectionParams =
-                new ConnectionParams.Builder(CLIENT_ID)
-                        .setRedirectUri(REDIRECT_URI)
-                        .showAuthView(true)
-                        .build();
+
         AuthenticationRequest.Builder builder =
                 new AuthenticationRequest.Builder(CLIENT_ID, AuthenticationResponse.Type.TOKEN, REDIRECT_URI);
         builder.setScopes(new String[]{"streaming", "playlist-read-private", "user-read-email", "user-read-playback-position"});
         AuthenticationRequest request = builder.build();
 
-        AuthenticationClient.openLoginActivity(this, REQUEST_CODE, request);
+       AuthenticationClient.openLoginActivity(this, REQUEST_CODE, request);
        }
             @Override
     protected void onStart() {
@@ -77,45 +73,41 @@ public class SpotifyActivity extends AppCompatActivity {
 
         if (token.equals("EmptyToken")) {
             Toast.makeText(getApplicationContext(), "NO token", Toast.LENGTH_LONG).show();
-        } else {
+            connectionParams =
+                    new ConnectionParams.Builder(CLIENT_ID)
+                            .setRedirectUri(REDIRECT_URI)
+                            .showAuthView(true)
+                            .build();
+            SpotifyAppRemote.connect(this, connectionParams,
+                    new Connector.ConnectionListener() {
 
+                        @Override
+                        public void onConnected(SpotifyAppRemote spotifyAppRemote) {
+                            mSpotifyAppRemote = spotifyAppRemote;
+                            Log.d("MainActivity3", "Connected! Yay!");
+                            spotifyAppRemote.getContentApi();
+                            // Now you can start interacting with App Remote
+                            connected();
+                        }
+
+                        @Override
+                        public void onFailure(Throwable throwable) {
+Log.e("whattf","   ffff");
+                        }
+
+                        private void connected() {
+                        //    mSpotifyAppRemote.getPlayerApi().play("spotify:playlist:37i9dQZF1DX2sUQwD7tbmL");
+
+
+
+                        }
+
+                        private void getList(String token) {
+
+                        }
+                    });
         }
-        SpotifyAppRemote.connect(this, connectionParams,
-                new Connector.ConnectionListener() {
 
-                    @Override
-                    public void onConnected(SpotifyAppRemote spotifyAppRemote) {
-                        mSpotifyAppRemote = spotifyAppRemote;
-                        Log.d("MainActivity3", "Connected! Yay!");
-                        spotifyAppRemote.getContentApi();
-                        // Now you can start interacting with App Remote
-                        connected();
-                    }
-
-                    @Override
-                    public void onFailure(Throwable throwable) {
-
-                    }
-
-                    private void connected() {
-                        mSpotifyAppRemote.getPlayerApi().play("spotify:playlist:37i9dQZF1DX2sUQwD7tbmL");
-                        mSpotifyAppRemote.getPlayerApi()
-                                .subscribeToPlayerState()
-                                .setEventCallback(new Subscription.EventCallback<PlayerState>() {
-                                    @Override
-                                    public void onEvent(PlayerState playerState) {
-                                        final Track track = playerState.track;
-                                        if (track != null) {
-                                            Log.d("MainActivity1", track.name + " by " + track.artist.name);
-                                        }
-                                    }
-                                });
-                    }
-
-                    private void getList(String token) {
-
-                    }
-                });
     }
 
 

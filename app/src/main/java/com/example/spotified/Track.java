@@ -1,10 +1,14 @@
 package com.example.spotified;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.util.ArrayList;
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Track {
+public class Track implements Parcelable {
 
     @SerializedName("album")
     @Expose
@@ -183,4 +187,63 @@ public class Track {
         this.uri = uri;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(this.album, flags);
+        dest.writeList(this.artists);
+        dest.writeStringList(this.availableMarkets);
+        dest.writeValue(this.discNumber);
+        dest.writeValue(this.durationMs);
+        dest.writeValue(this.explicit);
+        dest.writeParcelable(this.externalIds, flags);
+        dest.writeParcelable(this.externalUrls, flags);
+        dest.writeString(this.href);
+        dest.writeString(this.id);
+        dest.writeString(this.name);
+        dest.writeValue(this.popularity);
+        dest.writeString(this.previewUrl);
+        dest.writeValue(this.trackNumber);
+        dest.writeString(this.type);
+        dest.writeString(this.uri);
+    }
+
+    public Track() {
+    }
+
+    protected Track(Parcel in) {
+        this.album = in.readParcelable(Album.class.getClassLoader());
+        this.artists = new ArrayList<Artist>();
+        in.readList(this.artists, Artist.class.getClassLoader());
+        this.availableMarkets = in.createStringArrayList();
+        this.discNumber = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.durationMs = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.explicit = (Boolean) in.readValue(Boolean.class.getClassLoader());
+        this.externalIds = in.readParcelable(ExternalIds.class.getClassLoader());
+        this.externalUrls = in.readParcelable(TrackExternalUrls.class.getClassLoader());
+        this.href = in.readString();
+        this.id = in.readString();
+        this.name = in.readString();
+        this.popularity = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.previewUrl = in.readString();
+        this.trackNumber = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.type = in.readString();
+        this.uri = in.readString();
+    }
+
+    public static final Parcelable.Creator<Track> CREATOR = new Parcelable.Creator<Track>() {
+        @Override
+        public Track createFromParcel(Parcel source) {
+            return new Track(source);
+        }
+
+        @Override
+        public Track[] newArray(int size) {
+            return new Track[size];
+        }
+    };
 }

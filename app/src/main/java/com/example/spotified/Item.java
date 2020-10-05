@@ -1,10 +1,13 @@
 package com.example.spotified;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Item {
+public class Item implements Parcelable {
 
     @SerializedName("collaborative")
     @Expose
@@ -161,4 +164,58 @@ public class Item {
         this.uri = uri;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(this.collaborative);
+        dest.writeString(this.description);
+        dest.writeParcelable(this.externalUrls, flags);
+        dest.writeString(this.href);
+        dest.writeString(this.id);
+        dest.writeTypedList(this.images);
+        dest.writeString(this.name);
+        dest.writeParcelable(this.owner, flags);
+        dest.writeParcelable((Parcelable) this.primaryColor, flags);
+        dest.writeValue(this._public);
+        dest.writeString(this.snapshotId);
+        dest.writeParcelable(this.tracks, flags);
+        dest.writeString(this.type);
+        dest.writeString(this.uri);
+    }
+
+    public Item() {
+    }
+
+    protected Item(Parcel in) {
+        this.collaborative = (Boolean) in.readValue(Boolean.class.getClassLoader());
+        this.description = in.readString();
+        this.externalUrls = in.readParcelable(ExternalUrls.class.getClassLoader());
+        this.href = in.readString();
+        this.id = in.readString();
+        this.images = in.createTypedArrayList(Image.CREATOR);
+        this.name = in.readString();
+        this.owner = in.readParcelable(Owner.class.getClassLoader());
+        this.primaryColor = in.readParcelable(Object.class.getClassLoader());
+        this._public = (Boolean) in.readValue(Boolean.class.getClassLoader());
+        this.snapshotId = in.readString();
+        this.tracks = in.readParcelable(Tracks.class.getClassLoader());
+        this.type = in.readString();
+        this.uri = in.readString();
+    }
+
+    public static final Parcelable.Creator<Item> CREATOR = new Parcelable.Creator<Item>() {
+        @Override
+        public Item createFromParcel(Parcel source) {
+            return new Item(source);
+        }
+
+        @Override
+        public Item[] newArray(int size) {
+            return new Item[size];
+        }
+    };
 }

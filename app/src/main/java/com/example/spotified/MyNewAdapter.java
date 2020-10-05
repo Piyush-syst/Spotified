@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class MyNewAdapter extends RecyclerView.Adapter<MyNewAdapter.MyViewHolder> {
     TrackListActivity tla;
+    com.example.spotified.songsActivity son;
     public static class MyViewHolder extends RecyclerView.ViewHolder {
 
         // each data item is just a string in this case
@@ -22,7 +23,7 @@ public class MyNewAdapter extends RecyclerView.Adapter<MyNewAdapter.MyViewHolder
     }
     public MyNewAdapter(TrackListActivity myDataset, songsActivity songsActivity) {
         tla=myDataset;
-
+      son=songsActivity;
     }
     @NonNull
     @Override
@@ -37,6 +38,14 @@ public class MyNewAdapter extends RecyclerView.Adapter<MyNewAdapter.MyViewHolder
     @Override
     public void onBindViewHolder(@NonNull MyNewAdapter.MyViewHolder holder, int position) {
         holder.textView.setText(tla.getItems().get(position).getTrack().getName());
+        holder.textView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent (son,Player.class);
+                i.putExtra("song", tla.getItems().get(position).getTrack());
+                son.startActivity(i);
+            }
+        });
     }
 
     @Override

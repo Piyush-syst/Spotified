@@ -1,9 +1,12 @@
 package com.example.spotified;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Owner {
+public class Owner implements Parcelable {
 
     @SerializedName("display_name")
     @Expose
@@ -72,4 +75,42 @@ public class Owner {
         this.uri = uri;
     }
 
+    public Owner() {
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.displayName);
+        dest.writeParcelable(this.externalUrls, flags);
+        dest.writeString(this.href);
+        dest.writeString(this.id);
+        dest.writeString(this.type);
+        dest.writeString(this.uri);
+    }
+
+    protected Owner(Parcel in) {
+        this.displayName = in.readString();
+        this.externalUrls = in.readParcelable(ExternalUrls.class.getClassLoader());
+        this.href = in.readString();
+        this.id = in.readString();
+        this.type = in.readString();
+        this.uri = in.readString();
+    }
+
+    public static final Creator<Owner> CREATOR = new Creator<Owner>() {
+        @Override
+        public Owner createFromParcel(Parcel source) {
+            return new Owner(source);
+        }
+
+        @Override
+        public Owner[] newArray(int size) {
+            return new Owner[size];
+        }
+    };
 }
